@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cart - Organik Vibes</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+
+        <div class="logo">
+            <h1>Organik Vibes</h1>
+        </div>
+
+        <nav>
+
+            <a href="index.html">Home</a>
+
+            <a href="categories.html">Categories</a>
+
+            <a href="about.html">About Us</a>
+
+            <a href="account.html">Account</a>
+
+            <a href="cart.html" class="active">Cart</a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ================= CART ================= -->
+
+    <main class="cart-page">
+
+        <h2>My Cart</h2>
+
+
+        <!-- CART ITEMS -->
+
+        <div id="cart-items">
+
+            <!-- JavaScript displays cart products here -->
+
+        </div>
+
+
+        <!-- ================= ORDER SUMMARY ================= -->
+
+        <div class="cart-summary">
+
+            <h3>Order Summary</h3>
+
+
+            <div class="summary-row">
+
+                <span>Subtotal</span>
+
+                <span id="cart-subtotal">₹0</span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>Discount</span>
+
+                <span id="discount-rate">0%</span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>Discount Amount</span>
+
+                <span id="cart-discount">₹0</span>
+
+            </div>
+
+
+            <div class="summary-row total-row">
+
+                <strong>Total</strong>
+
+                <strong id="cart-total">₹0</strong>
+
+            </div>
+
+
+            <!-- CLEAR CART -->
+
+            <button
+                type="button"
+                class="btn"
+                onclick="clearCart()">
+
+                Clear Cart
+
+            </button>
+
+
+            <!-- MAIN PAYMENT BUTTON -->
+
+            <button
+                type="button"
+                class="btn"
+                onclick="showPayment()">
+
+                Proceed to Payment
+
+            </button>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PAYMENT OPTIONS -->
+        <!-- ================================================= -->
+
+        <section
+            id="payment-section"
+            style="display:none;">
+
+            <h2>Choose Payment Method</h2>
+
+            <p>Please select how you want to pay.</p>
+
+
+            <!-- COD -->
+
+            <div class="payment-option">
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="COD">
+
+                    <strong>Cash on Delivery</strong>
+
+                </label>
+
+                <p>
+                    Pay when your order is delivered.
+                </p>
+
+            </div>
+
+
+            <!-- UPI -->
+
+            <div class="payment-option">
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="paymentMethod"
+                        value="UPI">
+
+                    <strong>UPI / QR Code</strong>
+
+                </label>
+
+                <p>
+                    Pay using Google Pay, PhonePe, Paytm or another UPI app.
+                </p>
+
+            </div>
+
+
+            <!-- PAYMENT BUTTON -->
+
+            <button
+                type="button"
+                class="btn"
+                onclick="proceedPayment()">
+
+                Proceed to Payment
+
+            </button>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- UPI QR CODE -->
+        <!-- ================================================= -->
+
+        <section
+            id="qr-section"
+            style="display:none;">
+
+            <h2>UPI Payment</h2>
+
+            <p>
+                Scan the QR code using your UPI app.
+            </p>
+
+
+            <div id="qrcode"></div>
+
+
+            <p>
+                Complete the payment and then click Payment Done.
+            </p>
+
+
+            <button
+                type="button"
+                class="btn"
+                onclick="completeOrder()">
+
+                Payment Done
+
+            </button>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- THANK YOU -->
+        <!-- ================================================= -->
+
+        <section
+            id="thank-you"
+            style="display:none;">
+
+            <h1>Thank You for Ordering! 🎉</h1>
+
+            <p>
+                Your order has been placed successfully.
+            </p>
+
+            <p>
+                Thank you for shopping with Organik Vibes.
+            </p>
+
+
+            <a
+                href="index.html"
+                class="btn">
+
+                Continue Shopping
+
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            © 2026 Organik Vibes. All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- ================================================= -->
+    <!-- QR CODE LIBRARY -->
+    <!-- ================================================= -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+    <!-- ================================================= -->
+    <!-- YOUR EXISTING SCRIPT -->
+    <!-- ================================================= -->
+
+    <script src="script.js"></script>
+
+
+    <!-- ================================================= -->
+    <!-- PAYMENT JAVASCRIPT -->
+    <!-- ================================================= -->
+
+    <script>
+
+        // ==========================================
+        // SHOW PAYMENT OPTIONS
+        // ==========================================
+
+        function showPayment() {
+
+            const paymentSection =
+                document.getElementById("payment-section");
+
+            paymentSection.style.display = "block";
+
+            paymentSection.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+
+
+        // ==========================================
+        // PROCEED WITH PAYMENT
+        // ==========================================
+
+        function proceedPayment() {
+
+            const selectedPayment =
+                document.querySelector(
+                    'input[name="paymentMethod"]:checked'
+                );
+
+
+            // No payment selected
+
+            if (!selectedPayment) {
+
+                alert(
+                    "Please select Cash on Delivery or UPI."
+                );
+
+                return;
+
+            }
+
+
+            // ======================================
+            // CASH ON DELIVERY
+            // ======================================
+
+            if (selectedPayment.value === "COD") {
+
+                completeOrder();
+
+                return;
+
+            }
+
+
+            // ======================================
+            // UPI
+            // ======================================
+
+            if (selectedPayment.value === "UPI") {
+
+                document.getElementById(
+                    "payment-section"
+                ).style.display = "none";
+
+
+                document.getElementById(
+                    "qr-section"
+                ).style.display = "block";
+
+
+                generateQRCode();
+
+
+                document.getElementById(
+                    "qr-section"
+                ).scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+        }
+
+
+        // ==========================================
+        // GENERATE QR CODE
+        // ==========================================
+
+        function generateQRCode() {
+
+            const qrBox =
+                document.getElementById("qrcode");
+
+
+            qrBox.innerHTML = "";
+
+
+            // YOUR UPI ID
+
+            const upiID =
+                "9390245737@upi";
+
+
+            // GET CART TOTAL
+
+            const totalElement =
+                document.getElementById("cart-total");
+
+
+            let amount = 1;
+
+
+            if (totalElement) {
+
+                let text =
+                    totalElement.innerText;
+
+
+                amount =
+                    parseFloat(
+                        text.replace(/[^\d.]/g, "")
+                    );
+
+
+                if (
+                    isNaN(amount) ||
+                    amount <= 0
+                ) {
+
+                    amount = 1;
+
+                }
+
+            }
+
+
+            // UPI PAYMENT LINK
+
+            const upiLink =
+                "upi://pay?" +
+                "pa=" +
+                encodeURIComponent(upiID) +
+                "&pn=" +
+                encodeURIComponent("Organik Vibes") +
+                "&am=" +
+                amount.toFixed(2) +
+                "&cu=INR";
+
+
+            // CHECK QR LIBRARY
+
+            if (
+                typeof QRCode === "undefined"
+            ) {
+
+                alert(
+                    "QR Code library could not be loaded."
+                );
+
+                return;
+
+            }
+
+
+            // CREATE QR
+
+            new QRCode(
+                qrBox,
+                {
+                    text: upiLink,
+                    width: 220,
+                    height: 220
+                }
+            );
+
+        }
+
+
+        // ==========================================
+        // COMPLETE ORDER
+        // ==========================================
+
+        function completeOrder() {
+
+            document.getElementById(
+                "payment-section"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "qr-section"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "thank-you"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "thank-you"
+            ).scrollIntoView({
+                behavior: "smooth"
+            });
+
+
+            // CLEAR CART
+
+            localStorage.removeItem("cart");
+
+
+            // UPDATE CART IF FUNCTIONS EXIST
+
+            if (
+                typeof updateCartCount === "function"
+            ) {
+
+                updateCartCount();
+
+            }
+
+
+            if (
+                typeof displayCart === "function"
+            ) {
+
+                displayCart();
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
